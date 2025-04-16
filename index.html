@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中韩跨国旅行日程 | 精致行程规划</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4caf50;
+            --danger: #f44336;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s 0.2s forwards;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s 0.3s forwards;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            background: white;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(67, 97, 238, 0.3);
+        }
+
+        .tab-btn i {
+            font-size: 1.1rem;
+        }
+
+        .day-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+
+        .day-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .day-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .day-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .day-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .schedule-item {
+            background: white;
+            border-radius: calc(var(--radius) - 4px);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .schedule-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: var(--light);
+            color: var(--dark);
+            padding: 0.35rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+        }
+
+        .highlight {
+            background: linear-gradient(90deg, rgba(67, 97, 238, 0.1), transparent);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .schedule-content {
+            margin-top: 0.5rem;
+        }
+
+        .schedule-content p {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .schedule-content i {
+            margin-right: 0.6rem;
+            color: var(--primary);
+            font-size: 1.1rem;
+            min-width: 1.2rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .small-text {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            opacity: 0;
+            animation: fadeIn 0.6s 1s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .tabs {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .tab-btn {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            
+            .day-card {
+                padding: 1.5rem;
+            }
+            
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>中韩跨国旅行日程</h1>
+            <p class="subtitle">精心规划的5日旅程 · 从海口到首尔再到釜山</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showDay('day1')">
+                <i class="fas fa-plane-departure"></i> 5/2 中国
+            </button>
+            <button class="tab-btn" onclick="showDay('day2')">
+                <i class="fas fa-city"></i> 5/3 首尔
+            </button>
+            <button class="tab-btn" onclick="showDay('day3')">
+                <i class="fas fa-umbrella-beach"></i> 5/4 首尔
+            </button>
+            <button class="tab-btn" onclick="showDay('day4')">
+                <i class="fas fa-train"></i> 5/5 釜山
+            </button>
+            <button class="tab-btn" onclick="showDay('day5')">
+                <i class="fas fa-water"></i> 5/6 釜山
+            </button>
+        </div>
+
+        <!-- 5月2日 中国行程 -->
+        <div id="day1" class="day-card visible">
+            <div class="day-header">
+                <div class="day-icon">
+                    <i class="fas fa-plane-departure"></i>
+                </div>
+                <div>
+                    <h2 class="day-title">中国行程 · 海口</h2>
+                    <p class="day-date">2023年5月2日 · 星期二</p>
+                </div>
+            </div>
+            
+            <div class="schedule-grid">
+                <div class="schedule-item">
+                    <span class="time-badge">交通</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-plane"></i> <span class="highlight">22:40-00:05 桂林→海口</span></p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">住宿</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-hotel"></i> 海洋之星酒店（西秀海滩）</p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">备注</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-clipboard-check"></i> 提前准备韩国签证材料</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5月3日 首尔行程 -->
+        <div id="day2" class="day-card">
+            <div class="day-header">
+                <div class="day-icon">
+                    <i class="fas fa-city"></i>
+                </div>
+                <div>
+                    <h2 class="day-title">首尔初体验</h2>
+                    <p class="day-date">2023年5月3日 · 星期三</p>
+                </div>
+            </div>
+            
+            <div class="schedule-grid">
+                <div class="schedule-item">
+                    <span class="time-badge">上午</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-water"></i> 西秀海滩观海台</p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">交通</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-plane"></i> <span class="highlight">16:30-21:30 海口→仁川机场</span></p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">住宿</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-hotel"></i> 领导者酒店（明洞店）</p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">美食购物</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-shopping-bag"></i> 弘大购物：大创/OliveYoung</p>
+                        <p><i class="fas fa-utensils"></i> 夜宵：汉南洞土豆脊骨汤 <span class="tag">网红推荐</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5月4日 首尔深度游 -->
+        <div id="day3" class="day-card">
+            <div class="day-header">
+                <div class="day-icon">
+                    <i class="fas fa-umbrella-beach"></i>
+                </div>
+                <div>
+                    <h2 class="day-title">首尔城市探索</h2>
+                    <p class="day-date">2023年5月4日 · 星期四</p>
+                </div>
+            </div>
+            
+            <div class="schedule-grid">
+                <div class="schedule-item">
+                    <span class="time-badge">上午</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-bicycle"></i> 汉江公园骑行</p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">下午</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-palette"></i> 梨泰院艺术街</p>
+                        <p><i class="fas fa-sun"></i> 厚岩泉绝壁日落</p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">夜生活</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-ship"></i> 汉江夜景游船</p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">交通</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-subway"></i> 地铁3号线全线通行</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5月5日 釜山行程 -->
+        <div id="day4" class="day-card">
+            <div class="day-header">
+                <div class="day-icon">
+                    <i class="fas fa-train"></i>
+                </div>
+                <div>
+                    <h2 class="day-title">釜山海滨之旅</h2>
+                    <p class="day-date">2023年5月5日 · 星期五</p>
+                </div>
+            </div>
+            
+            <div class="schedule-grid">
+                <div class="schedule-item">
+                    <span class="time-badge">交通</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-train"></i> <span class="highlight">KTX 6:57-9:38 首尔→釜山</span></p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">上午</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-luggage-cart"></i> 釜山站行李寄存处</p>
+                        <span class="small-text">부산 용구 대영로243번길 38 1, 2층</span>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">下午</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-village"></i> 甘川文化村（小王子打卡）</p>
+                        <p><i class="fas fa-cable-car"></i> 松岛海上缆车</p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">住宿</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-hotel"></i> 广安路易斯汉密尔顿酒店</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5月6日 釜山深度游 -->
+        <div id="day5" class="day-card">
+            <div class="day-header">
+                <div class="day-icon">
+                    <i class="fas fa-water"></i>
+                </div>
+                <div>
+                    <h2 class="day-title">釜山海岸线之旅</h2>
+                    <p class="day-date">2023年5月6日 · 星期六</p>
+                </div>
+            </div>
+            
+            <div class="schedule-grid">
+                <div class="schedule-item">
+                    <span class="time-badge">上午</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-train"></i> 海云台海岸列车（11:00-11:30）</p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">下午</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-bridge"></i> 青沙浦天空步道</p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">夜宿</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-moon"></i> 广安里海水浴场夜景</p>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <span class="time-badge">备忘</span>
+                    <div class="schedule-content">
+                        <p><i class="fas fa-suitcase"></i> 准备次日返程行李</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>网页由问小白生成，仅供参考</p>
+            <p>最后更新时间为2025-04-16 ，星期三</p>
+            <p>wenxiaobai.com</p>
+        </footer>
+    </div>
+
+    <script>
+        function showDay(dayId) {
+            // 隐藏所有日程卡片
+            document.querySelectorAll('.day-card').forEach(card => {
+                card.classList.remove('visible');
+            });
+            
+            // 移除所有按钮激活状态
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 显示选定日程
+            const selectedCard = document.getElementById(dayId);
+            selectedCard.classList.add('visible');
+            
+            // 设置按钮激活状态
+            event.currentTarget.classList.add('active');
+            
+            // 平滑滚动到卡片
+            selectedCard.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // 卡片交错动画
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.day-card');
+            cards.forEach((card, index) => {
+                card.style.transitionDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>
